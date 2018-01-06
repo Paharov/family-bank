@@ -1,18 +1,14 @@
 package com.epam.training.homework.familybank.dao;
 
-import com.epam.training.homework.familybank.domain.Transaction;
+import com.epam.training.homework.familybank.domain.Account;
 
 import java.math.BigDecimal;
 
 public interface AccountDao {
 
-    void addTransaction(Transaction transaction);
+    void save(Account account);
 
-    void updateDebts(BigDecimal newDebts);
+    BigDecimal getDebtsById(long accountId);
 
-    void updateAssets(BigDecimal newAssets);
-
-    BigDecimal getDebts();
-
-    BigDecimal getAssets();
+    BigDecimal getAssetsById(long accountId);
 }
