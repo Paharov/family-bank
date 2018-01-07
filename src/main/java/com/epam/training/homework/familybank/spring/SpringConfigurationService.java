@@ -6,6 +6,7 @@ import com.epam.training.homework.familybank.dao.UserDao;
 import com.epam.training.homework.familybank.domain.Account;
 import com.epam.training.homework.familybank.service.AccountOverviewService;
 import com.epam.training.homework.familybank.service.PopulateDatabaseService;
+import com.epam.training.homework.familybank.service.TransactionService;
 import org.springframework.context.annotation.Bean;
 
 import java.math.BigDecimal;
@@ -22,9 +23,14 @@ public class SpringConfigurationService {
     }
 
     @Bean
-    public AccountOverviewService accountOverviewService(AccountDao accountDao, TransactionDao transactionDao,
-                                                         UserDao userDao) {
-        return new AccountOverviewService(accountDao, transactionDao, userDao);
+    public AccountOverviewService accountOverviewService(UserDao userDao) {
+        return new AccountOverviewService(userDao);
+    }
+
+    @Bean
+    public TransactionService transactionService(AccountDao accountDao, TransactionDao transactionDao,
+                                                 UserDao userDao) {
+        return new TransactionService(accountDao, transactionDao, userDao);
     }
 
     @Bean(initMethod = "populateDatabase")

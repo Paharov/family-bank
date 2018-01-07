@@ -8,6 +8,8 @@ public interface AccountDao {
 
     void save(Account account);
 
+    BigDecimal getBalanceById(long accountId);
+
     BigDecimal getDebtsById(long accountId);
 
     BigDecimal getAssetsById(long accountId);

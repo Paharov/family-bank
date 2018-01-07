@@ -13,6 +13,15 @@ public class JpaAccountDao extends GenericJpaDao implements AccountDao {
     }
 
     @Override
+    public BigDecimal getBalanceById(long accountId) {
+        final String query = "select a.balance from Account a where a.id = :id";
+
+        BigDecimal debts = (BigDecimal) entityManager.createQuery(query)
+            .setParameter("id", accountId).getSingleResult();
+        return debts;
+    }
+
+    @Override
     public BigDecimal getDebtsById(long accountId) {
         final String query = "select a.debts from Account a where a.id = :id";
 

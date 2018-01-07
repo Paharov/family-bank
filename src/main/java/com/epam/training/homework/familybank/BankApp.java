@@ -1,6 +1,7 @@
 package com.epam.training.homework.familybank;
 
 import com.epam.training.homework.familybank.service.AccountOverviewService;
+import com.epam.training.homework.familybank.service.TransactionService;
 import com.epam.training.homework.familybank.spring.SpringConfigurationDao;
 import com.epam.training.homework.familybank.spring.SpringConfigurationJpa;
 import com.epam.training.homework.familybank.spring.SpringConfigurationService;
@@ -15,6 +16,7 @@ public class BankApp {
     private static final BigDecimal BORROWING_RATE = new BigDecimal(0.002);
 
     private final AccountOverviewService accountOverviewService;
+    private final TransactionService transactionService;
 
     public BankApp() {
         AbstractApplicationContext context = new AnnotationConfigApplicationContext(
@@ -22,6 +24,7 @@ public class BankApp {
             SpringConfigurationJpa.class,
             SpringConfigurationService.class);
         accountOverviewService = context.getBean(AccountOverviewService.class);
+        transactionService = context.getBean(TransactionService.class);
     }
 
     public static void main(String[] args) {
@@ -44,5 +47,13 @@ public class BankApp {
         System.out.printf("The debts of Cecil: %.2f%n", accountOverviewService.getDebtsByName("Cecil"));
         System.out.printf("The assets of Cecil: %.2f%n", accountOverviewService.getAssetsByName("Cecil"));
         System.out.println();
+
+        System.out.println("Cecil sends 1000 HUF as a gift to Ben...");
+        transactionService.giftMoney("Cecil", "Ben", new BigDecimal(1000));
+        System.out.printf("The balance of Cecil after gifting 1000 HUF: %.2f%n",
+                          accountOverviewService.getBalanceByName("Cecil"));
+        System.out.printf("The balance of Ben after receiving 1000 HUF: %.2f%n",
+                          accountOverviewService.getBalanceByName("Ben"));
+
     }
 }

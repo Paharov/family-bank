@@ -5,8 +5,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.fail;
 
-import com.epam.training.homework.familybank.dao.AccountDao;
-import com.epam.training.homework.familybank.dao.TransactionDao;
 import com.epam.training.homework.familybank.dao.UserDao;
 import org.junit.Before;
 import org.junit.Rule;
@@ -19,8 +17,6 @@ import javax.persistence.NoResultException;
 
 public class AccountOverviewServiceTest {
 
-    private AccountDao accountDao;
-    private TransactionDao transactionDao;
     private UserDao userDao;
     private AccountOverviewService underTest;
 
@@ -29,10 +25,8 @@ public class AccountOverviewServiceTest {
 
     @Before
     public void setUp() {
-        accountDao = Mockito.mock(AccountDao.class);
-        transactionDao = Mockito.mock(TransactionDao.class);
         userDao = Mockito.mock(UserDao.class);
-        underTest = new AccountOverviewService(accountDao, transactionDao, userDao);
+        underTest = new AccountOverviewService(userDao);
     }
 
     @Test
