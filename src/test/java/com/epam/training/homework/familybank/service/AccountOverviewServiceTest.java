@@ -36,7 +36,7 @@ public class AccountOverviewServiceTest {
     }
 
     @Test
-    public void shouldReturnWithResultWhenExistingUser() {
+    public void shouldReturnWithBalanceResultWhenExistingUser() {
         // Given
         Mockito.when(userDao.findBalanceByName("ExistingUser")).thenReturn(new BigDecimal(2000));
 
@@ -48,13 +48,63 @@ public class AccountOverviewServiceTest {
     }
 
     @Test
-    public void shouldThrowNoResultExceptionWhenNonExistingUser() {
+    public void shouldReturnWithDebtsResultWhenExistingUser() {
+        // Given
+        Mockito.when(userDao.findDebtsByName("ExistingUser")).thenReturn(new BigDecimal(100));
+
+        // When
+        BigDecimal debts = underTest.getDebtsByName("ExistingUser");
+
+        // Then
+        assertThat(debts, is(equalTo(new BigDecimal(100))));
+    }
+
+    @Test
+    public void shouldReturnWithAssetsResultWhenExistingUser() {
+        // Given
+        Mockito.when(userDao.findAssetsByName("ExistingUser")).thenReturn(new BigDecimal(100));
+
+        // When
+        BigDecimal assets = underTest.getAssetsByName("ExistingUser");
+
+        // Then
+        assertThat(assets, is(equalTo(new BigDecimal(100))));
+    }
+
+    @Test
+    public void shouldThrowNoResultExceptionWhenAskedForBalanceOfNonExistingUser() {
         // Given
         exception.expect(NoResultException.class);
         Mockito.when(userDao.findBalanceByName("NonExistingUser")).thenThrow(new NoResultException());
 
         // When
         underTest.getBalanceByName("NonExistingUser");
+
+        // Then
+        fail("Should have thrown a NoResultException!");
+    }
+
+    @Test
+    public void shouldThrowNoResultExceptionWhenAskedForDebtsOfNonExistingUser() {
+        // Given
+        exception.expect(NoResultException.class);
+        Mockito.when(userDao.findDebtsByName("NonExistingUser")).thenThrow(new NoResultException());
+
+        // When
+        underTest.getDebtsByName("NonExistingUser");
+
+        // Then
+        fail("Should have thrown a NoResultException!");
+    }
+
+    @Test
+    public void shouldThrowNoResultExceptionWhenAskedForAssetsOfNonExistingUser() {
+        // Given
+        exception.expect(NoResultException.class);
+        Mockito.when(userDao.findAssetsByName("NonExistingUser")).thenThrow(new NoResultException());
+
+        // When
+        underTest.getAssetsByName("NonExistingUser");
 
         // Then
         fail("Should have thrown a NoResultException!");

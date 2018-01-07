@@ -24,4 +24,16 @@ public class AccountOverviewService {
         BigDecimal balance = userDao.findBalanceByName(username);
         return balance;
     }
+
+    @Transactional(readOnly = true)
+    public BigDecimal getDebtsByName(String username) {
+        BigDecimal debts = userDao.findDebtsByName(username);
+        return debts;
+    }
+
+    @Transactional(readOnly = true)
+    public BigDecimal getAssetsByName(String username) {
+        BigDecimal assets = userDao.findAssetsByName(username);
+        return assets;
+    }
 }

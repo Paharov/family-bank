@@ -12,9 +12,9 @@ public class Account {
     @Id
     @GeneratedValue
     private long id;
-    private BigDecimal balance;
-    private BigDecimal debts;
-    private BigDecimal assets;
+    private BigDecimal balance = new BigDecimal(0);
+    private BigDecimal debts = new BigDecimal(0);
+    private BigDecimal assets = new BigDecimal(0);
     @OneToOne
     private User user;
 
