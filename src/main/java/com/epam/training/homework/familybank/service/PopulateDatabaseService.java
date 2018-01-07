@@ -20,8 +20,16 @@ public class PopulateDatabaseService {
     @Resource
     private PlatformTransactionManager transactionManager;
 
+    @Resource
+    private User bankUser;
+    @Resource
+    private Account bank;
+
     public void populateDatabase() {
         TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+
+        entityManager.persist(bankUser);
+        entityManager.persist(bank);
 
         User alan = new User();
         alan.setName("Alan");

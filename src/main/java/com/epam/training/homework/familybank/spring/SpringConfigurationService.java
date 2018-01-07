@@ -4,21 +4,27 @@ import com.epam.training.homework.familybank.dao.AccountDao;
 import com.epam.training.homework.familybank.dao.TransactionDao;
 import com.epam.training.homework.familybank.dao.UserDao;
 import com.epam.training.homework.familybank.domain.Account;
+import com.epam.training.homework.familybank.domain.User;
 import com.epam.training.homework.familybank.service.AccountOverviewService;
 import com.epam.training.homework.familybank.service.PopulateDatabaseService;
 import com.epam.training.homework.familybank.service.TransactionService;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
-import java.math.BigDecimal;
-
+@Import(SpringConfigurationJpa.class)
 public class SpringConfigurationService {
 
     @Bean
-    public Account bank() {
+    public User bankUser() {
+        User bankUser = new User();
+        bankUser.setName("BANK");
+        return bankUser;
+    }
+
+    @Bean
+    public Account bank(User bankUser) {
         Account bank = new Account();
-        bank.setBalance(new BigDecimal(0));
-        bank.setAssets(new BigDecimal(0));
-        bank.setDebts(new BigDecimal(0));
+        bank.setUser(bankUser);
         return bank;
     }
 
