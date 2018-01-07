@@ -12,6 +12,7 @@ public class Account {
     @Id
     @GeneratedValue
     private long id;
+    private BigDecimal balance;
     private BigDecimal debts;
     private BigDecimal assets;
     @OneToOne
@@ -23,6 +24,14 @@ public class Account {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 
     public BigDecimal getDebts() {

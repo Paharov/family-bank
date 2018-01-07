@@ -13,6 +13,7 @@ public class SpringConfigurationService {
     @Bean
     public Account bank() {
         Account bank = new Account();
+        bank.setBalance(new BigDecimal(0));
         bank.setAssets(new BigDecimal(0));
         bank.setDebts(new BigDecimal(0));
         return bank;
