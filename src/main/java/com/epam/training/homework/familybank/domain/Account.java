@@ -1,11 +1,9 @@
 package com.epam.training.homework.familybank.domain;
 
 import java.math.BigDecimal;
-import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -16,9 +14,7 @@ public class Account {
     private long id;
     private BigDecimal debts;
     private BigDecimal assets;
-    @ManyToMany
-    private List<Transaction> transactions;
-    @OneToOne(mappedBy = "account")
+    @OneToOne
     private User user;
 
     public long getId() {
@@ -43,14 +39,6 @@ public class Account {
 
     public void setAssets(BigDecimal assets) {
         this.assets = assets;
-    }
-
-    public List<Transaction> getTransactions() {
-        return transactions;
-    }
-
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
     }
 
     public User getUser() {

@@ -3,7 +3,6 @@ package com.epam.training.homework.familybank.domain;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 
 @Entity
 public class User {
@@ -12,8 +11,6 @@ public class User {
     @GeneratedValue
     private long id;
     private String name;
-    @OneToOne
-    private Account account;
 
     public long getId() {
         return id;
@@ -31,11 +28,4 @@ public class User {
         this.name = name;
     }
 
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
 }

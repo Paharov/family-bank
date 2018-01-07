@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Transaction {
@@ -12,9 +12,9 @@ public class Transaction {
     @Id
     @GeneratedValue
     private long id;
-    @ManyToMany(mappedBy = "transactions")
+    @ManyToOne
     private Account fromAccount;
-    @ManyToMany(mappedBy = "transactions")
+    @ManyToOne
     private Account toAccount;
     private BigDecimal amount;
 
