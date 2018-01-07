@@ -30,6 +30,8 @@ public class BankApp {
     }
 
     private void simulate() {
-        System.out.println(accountOverviewService.getBalanceByName("Ben"));
+        System.out.printf("The balance of Alan: %.2f%n", accountOverviewService.getBalanceByName("Alan"));
+        System.out.printf("The balance of Ben: %.2f%n", accountOverviewService.getBalanceByName("Ben"));
+        System.out.printf("The balance of Cecil: %.2f%n", accountOverviewService.getBalanceByName("Cecil"));
     }
 }

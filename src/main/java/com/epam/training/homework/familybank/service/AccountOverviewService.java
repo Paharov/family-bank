@@ -21,6 +21,7 @@ public class AccountOverviewService {
 
     @Transactional(readOnly = true)
     public BigDecimal getBalanceByName(String username) {
-        return new BigDecimal(444);
+        BigDecimal balance = userDao.findBalanceByName(username);
+        return balance;
     }
 }
