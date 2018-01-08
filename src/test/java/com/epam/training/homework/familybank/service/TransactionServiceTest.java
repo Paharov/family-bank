@@ -34,14 +34,14 @@ public class TransactionServiceTest {
     }
 
     @Test
-    public void shouldExecuteTheTransferWhenCalledWithSufficientBalance() {
+    public void shouldExecuteGiftingWhenCalledWithSufficientBalance() {
         // Given
         Mockito.when(userDao.findAccountByName("From")).thenReturn(new Account());
         Mockito.when(userDao.findAccountByName("To")).thenReturn(new Account());
         Mockito.when(accountDao.getBalanceById(Mockito.anyLong())).thenReturn(new BigDecimal(10000));
 
         // When
-        underTest.giftMoney("From", "To", new BigDecimal(100));
+        underTest.gift("From", "To", new BigDecimal(100));
 
         // Then
         InOrder inOrder = Mockito.inOrder(userDao, accountDao, transactionDao);
@@ -55,7 +55,7 @@ public class TransactionServiceTest {
     }
 
     @Test
-    public void shouldThrowNotEnoughMoneyExceptionWhenCalledWithInsufficientBalance() {
+    public void shouldThrowNotEnoughMoneyExceptionWhenGiftingCalledWithInsufficientBalance() {
         // Given
         Mockito.when(userDao.findAccountByName("From")).thenReturn(new Account());
         Mockito.when(userDao.findAccountByName("To")).thenReturn(new Account());
@@ -64,9 +64,83 @@ public class TransactionServiceTest {
         exception.expectMessage("The donor's balance is only 50");
 
         // When
-        underTest.giftMoney("From", "To", new BigDecimal(100));
+        underTest.gift("From", "To", new BigDecimal(100));
 
         // Then
         fail("Should have thrown a NotEnoughMoneyException!");
+    }
+
+    @Test
+    public void shouldThrowInvalidAmountExceptionWhenGiftNegativeAmount() {
+        // Given
+        Mockito.when(userDao.findAccountByName("From")).thenReturn(new Account());
+        Mockito.when(userDao.findAccountByName("To")).thenReturn(new Account());
+        exception.expect(InvalidAmountException.class);
+        exception.expectMessage("You can gift only a positive amount!");
+
+        // When
+        underTest.gift("From", "To", new BigDecimal(-100));
+
+        // Then
+        fail("Should have thrown an InvalidAmountException");
+    }
+
+    @Test
+    public void shouldThrowInvalidAmountExceptionWhenGiftZero() {
+        // Given
+        Mockito.when(userDao.findAccountByName("From")).thenReturn(new Account());
+        Mockito.when(userDao.findAccountByName("To")).thenReturn(new Account());
+        exception.expect(InvalidAmountException.class);
+        exception.expectMessage("You can gift only a positive amount!");
+
+        // When
+        underTest.gift("From", "To", new BigDecimal(0));
+
+        // Then
+        fail("Should have thrown an InvalidAmountException");
+    }
+
+    @Test
+    public void shouldIncreaseBalanceWhenDepositPositiveAmount() {
+        // Given
+        Mockito.when(userDao.findAccountByName(Mockito.anyString())).thenReturn(new Account());
+        Mockito.when(accountDao.getBalanceById(Mockito.anyLong())).thenReturn(new BigDecimal(Mockito.anyInt()));
+
+        // When
+        underTest.deposit("Anyone", new BigDecimal(100));
+
+        // Then
+        InOrder inOrder = Mockito.inOrder(userDao, accountDao);
+        inOrder.verify(userDao).findAccountByName("Anyone");
+        inOrder.verify(accountDao).getBalanceById(Mockito.anyLong());
+        inOrder.verify(accountDao).save(Mockito.anyObject());
+    }
+
+    @Test
+    public void shouldThrowInvalidAmountExceptionWhenDepositNegativeAmount() {
+        // Given
+        Mockito.when(userDao.findAccountByName(Mockito.anyString())).thenReturn(new Account());
+        exception.expect(InvalidAmountException.class);
+        exception.expectMessage("You can deposit only a positive amount!");
+
+        // When
+        underTest.deposit("Anyone", new BigDecimal(-100));
+
+        // Then
+        fail("Should have thrown an InvalidAmountException");
+    }
+
+    @Test
+    public void shouldThrowInvalidAmountExceptionWhenDepositZero() {
+        // Given
+        Mockito.when(userDao.findAccountByName(Mockito.anyString())).thenReturn(new Account());
+        exception.expect(InvalidAmountException.class);
+        exception.expectMessage("You can deposit only a positive amount!");
+
+        // When
+        underTest.deposit("Anyone", new BigDecimal(0));
+
+        // Then
+        fail("Should have thrown an InvalidAmountException");
     }
 }

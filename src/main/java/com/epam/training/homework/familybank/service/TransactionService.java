@@ -23,7 +23,11 @@ public class TransactionService {
     }
 
     @Transactional
-    public void giftMoney(String donor, String recipient, BigDecimal amount) {
+    public void gift(String donor, String recipient, BigDecimal amount) {
+        if (amount.compareTo(new BigDecimal(0)) <= 0) {
+            throw new InvalidAmountException("You can gift only a positive amount!");
+        }
+
         Account donorAccount = userDao.findAccountByName(donor);
         Account recipientAccount = userDao.findAccountByName(recipient);
 
@@ -56,5 +60,15 @@ public class TransactionService {
         transaction.setToAccount(to);
         transaction.setAmount(amount);
         transactionDao.save(transaction);
+    }
+
+    @Transactional
+    public void deposit(String name, BigDecimal amount) {
+        if (amount.compareTo(new BigDecimal(0)) <= 0) {
+            throw new InvalidAmountException("You can deposit only a positive amount!");
+        }
+
+        Account account = userDao.findAccountByName(name);
+        increaseBalance(account, amount);
     }
 }

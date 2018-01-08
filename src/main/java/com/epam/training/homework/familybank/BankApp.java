@@ -49,7 +49,7 @@ public class BankApp {
         System.out.println();
 
         System.out.println("Cecil sends 1000 HUF as a gift to Ben...");
-        transactionService.giftMoney("Cecil", "Ben", new BigDecimal(1000));
+        transactionService.gift("Cecil", "Ben", new BigDecimal(1000));
         System.out.printf("The balance of Cecil after gifting 1000 HUF: %.2f%n",
                           accountOverviewService.getBalanceByName("Cecil"));
         System.out.printf("The balance of Ben after receiving 1000 HUF: %.2f%n",
