@@ -11,9 +11,5 @@ public interface UserDao {
 
     BigDecimal findBalanceByName(String name);
 
-    BigDecimal findDebtsByName(String name);
-
-    BigDecimal findAssetsByName(String name);
-
     Account findAccountByName(String name);
 }

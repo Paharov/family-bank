@@ -3,6 +3,7 @@ package com.epam.training.homework.familybank.dao;
 import com.epam.training.homework.familybank.domain.Account;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface AccountDao {
 
@@ -10,7 +11,9 @@ public interface AccountDao {
 
     BigDecimal getBalanceById(long accountId);
 
-    BigDecimal getDebtsById(long accountId);
+    BigDecimal getInvestmentById(long accountId);
 
-    BigDecimal getAssetsById(long accountId);
+    Account getAccountById(long accountId);
+
+    List<Account> getAccountsInDebt();
 }

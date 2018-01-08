@@ -13,8 +13,7 @@ public class Account {
     @GeneratedValue
     private long id;
     private BigDecimal balance = new BigDecimal(0);
-    private BigDecimal debts = new BigDecimal(0);
-    private BigDecimal assets = new BigDecimal(0);
+    private BigDecimal investment = new BigDecimal(0);
     @OneToOne
     private User user;
 
@@ -34,20 +33,12 @@ public class Account {
         this.balance = balance;
     }
 
-    public BigDecimal getDebts() {
-        return debts;
+    public BigDecimal getInvestment() {
+        return investment;
     }
 
-    public void setDebts(BigDecimal debts) {
-        this.debts = debts;
-    }
-
-    public BigDecimal getAssets() {
-        return assets;
-    }
-
-    public void setAssets(BigDecimal assets) {
-        this.assets = assets;
+    public void setInvestment(BigDecimal investment) {
+        this.investment = investment;
     }
 
     public User getUser() {

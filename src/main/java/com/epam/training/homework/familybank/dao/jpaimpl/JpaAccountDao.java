@@ -4,6 +4,7 @@ import com.epam.training.homework.familybank.dao.AccountDao;
 import com.epam.training.homework.familybank.domain.Account;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class JpaAccountDao extends GenericJpaDao implements AccountDao {
 
@@ -16,26 +17,32 @@ public class JpaAccountDao extends GenericJpaDao implements AccountDao {
     public BigDecimal getBalanceById(long accountId) {
         final String query = "select a.balance from Account a where a.id = :id";
 
-        BigDecimal debts = (BigDecimal) entityManager.createQuery(query)
+        BigDecimal debts = entityManager.createQuery(query, BigDecimal.class)
             .setParameter("id", accountId).getSingleResult();
         return debts;
     }
 
     @Override
-    public BigDecimal getDebtsById(long accountId) {
-        final String query = "select a.debts from Account a where a.id = :id";
+    public BigDecimal getInvestmentById(long accountId) {
+        final String query = "select a.investment from Account a where a.id = :id";
 
-        BigDecimal debts = (BigDecimal) entityManager.createQuery(query)
+        BigDecimal debts = entityManager.createQuery(query, BigDecimal.class)
             .setParameter("id", accountId).getSingleResult();
         return debts;
     }
 
     @Override
-    public BigDecimal getAssetsById(long accountId) {
-        final String query = "select a.assets from Account a where a.id = :id";
-
-        BigDecimal assets = (BigDecimal) entityManager.createQuery(query)
-            .setParameter("id", accountId).getSingleResult();
-        return assets;
+    public Account getAccountById(long accountId) {
+        return entityManager.find(Account.class, accountId);
     }
+
+    @Override
+    public List<Account> getAccountsInDebt() {
+        final String query = "select a from Account a where a.balance < 0";
+
+        List<Account> accounts = entityManager.createQuery(query, Account.class).getResultList();
+
+        return accounts;
+    }
+
 }

@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.fail;
 
+import com.epam.training.homework.familybank.dao.AccountDao;
 import com.epam.training.homework.familybank.dao.UserDao;
 import org.junit.Before;
 import org.junit.Rule;
@@ -17,6 +18,7 @@ import javax.persistence.NoResultException;
 
 public class AccountOverviewServiceTest {
 
+    private AccountDao accountDao;
     private UserDao userDao;
     private AccountOverviewService underTest;
 
@@ -25,8 +27,9 @@ public class AccountOverviewServiceTest {
 
     @Before
     public void setUp() {
+        accountDao = Mockito.mock(AccountDao.class);
         userDao = Mockito.mock(UserDao.class);
-        underTest = new AccountOverviewService(userDao);
+        underTest = new AccountOverviewService(accountDao, userDao);
     }
 
     @Test
@@ -42,30 +45,6 @@ public class AccountOverviewServiceTest {
     }
 
     @Test
-    public void shouldReturnWithDebtsResultWhenExistingUser() {
-        // Given
-        Mockito.when(userDao.findDebtsByName("ExistingUser")).thenReturn(new BigDecimal(100));
-
-        // When
-        BigDecimal debts = underTest.getDebtsByName("ExistingUser");
-
-        // Then
-        assertThat(debts, is(equalTo(new BigDecimal(100))));
-    }
-
-    @Test
-    public void shouldReturnWithAssetsResultWhenExistingUser() {
-        // Given
-        Mockito.when(userDao.findAssetsByName("ExistingUser")).thenReturn(new BigDecimal(100));
-
-        // When
-        BigDecimal assets = underTest.getAssetsByName("ExistingUser");
-
-        // Then
-        assertThat(assets, is(equalTo(new BigDecimal(100))));
-    }
-
-    @Test
     public void shouldThrowNoResultExceptionWhenAskedForBalanceOfNonExistingUser() {
         // Given
         exception.expect(NoResultException.class);
@@ -73,32 +52,6 @@ public class AccountOverviewServiceTest {
 
         // When
         underTest.getBalanceByName("NonExistingUser");
-
-        // Then
-        fail("Should have thrown a NoResultException!");
-    }
-
-    @Test
-    public void shouldThrowNoResultExceptionWhenAskedForDebtsOfNonExistingUser() {
-        // Given
-        exception.expect(NoResultException.class);
-        Mockito.when(userDao.findDebtsByName("NonExistingUser")).thenThrow(new NoResultException());
-
-        // When
-        underTest.getDebtsByName("NonExistingUser");
-
-        // Then
-        fail("Should have thrown a NoResultException!");
-    }
-
-    @Test
-    public void shouldThrowNoResultExceptionWhenAskedForAssetsOfNonExistingUser() {
-        // Given
-        exception.expect(NoResultException.class);
-        Mockito.when(userDao.findAssetsByName("NonExistingUser")).thenThrow(new NoResultException());
-
-        // When
-        underTest.getAssetsByName("NonExistingUser");
 
         // Then
         fail("Should have thrown a NoResultException!");

@@ -1,15 +1,23 @@
 package com.epam.training.homework.familybank.service;
 
+import com.epam.training.homework.familybank.dao.AccountDao;
 import com.epam.training.homework.familybank.dao.UserDao;
+import com.epam.training.homework.familybank.domain.Account;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import javax.annotation.Resource;
 
 public class AccountOverviewService {
 
+    private final AccountDao accountDao;
     private final UserDao userDao;
 
-    public AccountOverviewService(UserDao userDao) {
+    @Resource
+    private Account bank;
+
+    public AccountOverviewService(AccountDao accountDao, UserDao userDao) {
+        this.accountDao = accountDao;
         this.userDao = userDao;
     }
 
@@ -20,14 +28,8 @@ public class AccountOverviewService {
     }
 
     @Transactional(readOnly = true)
-    public BigDecimal getDebtsByName(String username) {
-        BigDecimal debts = userDao.findDebtsByName(username);
-        return debts;
+    public BigDecimal getBankBalance() {
+        return accountDao.getBalanceById(bank.getId());
     }
 
-    @Transactional(readOnly = true)
-    public BigDecimal getAssetsByName(String username) {
-        BigDecimal assets = userDao.findAssetsByName(username);
-        return assets;
-    }
 }

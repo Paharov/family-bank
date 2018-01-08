@@ -8,18 +8,24 @@ import com.epam.training.homework.familybank.domain.Transaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class TransactionService {
+
+    private static final BigDecimal LENDING_RATE = new BigDecimal(0.001);
+    private static final BigDecimal BORROWING_RATE = new BigDecimal(0.002);
 
     private final AccountDao accountDao;
     private final TransactionDao transactionDao;
     private final UserDao userDao;
+    private final Account bank;
 
     public TransactionService(AccountDao accountDao,
-                              TransactionDao transactionDao, UserDao userDao) {
+                              TransactionDao transactionDao, UserDao userDao, Account bank) {
         this.accountDao = accountDao;
         this.transactionDao = transactionDao;
         this.userDao = userDao;
+        this.bank = bank;
     }
 
     @Transactional
@@ -31,17 +37,67 @@ public class TransactionService {
         Account donorAccount = userDao.findAccountByName(donor);
         Account recipientAccount = userDao.findAccountByName(recipient);
 
+        BigDecimal donorBalance = accountDao.getBalanceById(donorAccount.getId());
+        if (donorBalance.compareTo(amount) < 0) {
+            throw new NotEnoughMoneyException("The donor's balance is only " + donorBalance);
+        }
+
         decreaseBalance(donorAccount, amount);
         increaseBalance(recipientAccount, amount);
         addTransaction(donorAccount, recipientAccount, amount);
     }
 
     @Transactional
-    protected void decreaseBalance(Account account, BigDecimal amount) {
+    public void deposit(String name, BigDecimal amount) {
+        if (amount.compareTo(new BigDecimal(0)) <= 0) {
+            throw new InvalidAmountException("You can deposit only a positive amount!");
+        }
+
+        Account account = userDao.findAccountByName(name);
+        increaseBalance(account, amount);
+    }
+
+    @Transactional
+    public void withdraw(String name, BigDecimal amount) {
+        if (amount.compareTo(new BigDecimal(0)) <= 0) {
+            throw new InvalidAmountException("You can withdraw only a positive amount!");
+        }
+
+        Account account = userDao.findAccountByName(name);
         BigDecimal balance = accountDao.getBalanceById(account.getId());
         if (balance.compareTo(amount) < 0) {
-            throw new NotEnoughMoneyException("The donor's balance is only " + balance);
+            throw new NotEnoughMoneyException("Your balance is only " + balance);
         }
+        decreaseBalance(account, amount);
+    }
+
+    @Transactional
+    public void lend(String name, BigDecimal amount) {
+        Account account = userDao.findAccountByName(name);
+        BigDecimal balance = accountDao.getBalanceById(account.getId());
+        if (balance.compareTo(amount) < 0) {
+            throw new NotEnoughMoneyException("Your balance in only " + balance);
+        }
+        Account bankEntity = accountDao.getAccountById(bank.getId());
+        decreaseBalance(account, amount);
+        increaseInvestment(account, amount);
+        increaseBalance(bankEntity, amount);
+        addTransaction(account, bankEntity, amount);
+    }
+
+
+    @Transactional
+    public void borrow(String name, BigDecimal amount) {
+        Account account = userDao.findAccountByName(name);
+        Account bankEntity = accountDao.getAccountById(bank.getId());
+        decreaseBalance(account, amount);
+        decreaseBalance(bankEntity, amount);
+        addTransaction(bankEntity, account, amount);
+    }
+
+    @Transactional
+    protected void decreaseBalance(Account account, BigDecimal amount) {
+        BigDecimal balance = accountDao.getBalanceById(account.getId());
         account.setBalance(balance.subtract(amount));
         accountDao.save(account);
     }
@@ -50,6 +106,13 @@ public class TransactionService {
     protected void increaseBalance(Account account, BigDecimal amount) {
         BigDecimal balance = accountDao.getBalanceById(account.getId());
         account.setBalance(balance.add(amount));
+        accountDao.save(account);
+    }
+
+    @Transactional
+    protected void increaseInvestment(Account account, BigDecimal amount) {
+        BigDecimal investment = accountDao.getInvestmentById(account.getId());
+        account.setInvestment(investment.add(amount));
         accountDao.save(account);
     }
 
@@ -63,12 +126,18 @@ public class TransactionService {
     }
 
     @Transactional
-    public void deposit(String name, BigDecimal amount) {
-        if (amount.compareTo(new BigDecimal(0)) <= 0) {
-            throw new InvalidAmountException("You can deposit only a positive amount!");
-        }
-
-        Account account = userDao.findAccountByName(name);
-        increaseBalance(account, amount);
+    public void calculateInterests() {
+        updateDebts();
     }
+
+    @Transactional
+    protected void updateDebts() {
+        List<Account> accountsInDebt = accountDao.getAccountsInDebt();
+        for (Account account : accountsInDebt) {
+            BigDecimal balance = accountDao.getBalanceById(account.getId());
+            account.setBalance(balance.add(balance.multiply(BORROWING_RATE)));
+            accountDao.save(account);
+        }
+    }
+
 }

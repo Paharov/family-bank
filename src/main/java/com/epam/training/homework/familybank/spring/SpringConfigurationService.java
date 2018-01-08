@@ -29,14 +29,14 @@ public class SpringConfigurationService {
     }
 
     @Bean
-    public AccountOverviewService accountOverviewService(UserDao userDao) {
-        return new AccountOverviewService(userDao);
+    public AccountOverviewService accountOverviewService(AccountDao accountDao, UserDao userDao) {
+        return new AccountOverviewService(accountDao, userDao);
     }
 
     @Bean
     public TransactionService transactionService(AccountDao accountDao, TransactionDao transactionDao,
-                                                 UserDao userDao) {
-        return new TransactionService(accountDao, transactionDao, userDao);
+                                                 UserDao userDao, Account bank) {
+        return new TransactionService(accountDao, transactionDao, userDao, bank);
     }
 
     @Bean(initMethod = "populateDatabase")
