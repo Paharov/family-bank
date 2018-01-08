@@ -128,6 +128,7 @@ public class TransactionService {
     @Transactional
     public void calculateInterests() {
         updateDebts();
+        dealProfit();
     }
 
     @Transactional
@@ -136,6 +137,21 @@ public class TransactionService {
         for (Account account : accountsInDebt) {
             BigDecimal balance = accountDao.getBalanceById(account.getId());
             account.setBalance(balance.add(balance.multiply(BORROWING_RATE)));
+            accountDao.save(account);
+        }
+    }
+
+    @Transactional
+    protected void dealProfit() {
+        BigDecimal sumOfDebts = accountDao.getSumOfDebts();
+        BigDecimal sumOfInvestments = accountDao.getSumOfInvestments();
+        List<Account> accountsWithInvestment = accountDao.getAccountsWithInvestment();
+        for (Account account : accountsWithInvestment) {
+            BigDecimal balance = accountDao.getBalanceById(account.getId());
+            BigDecimal investment = accountDao.getInvestmentById(account.getId());
+            BigDecimal investmentRatio = investment.divide(sumOfInvestments);
+            account.setBalance(balance.add(sumOfDebts.multiply(investmentRatio).multiply(LENDING_RATE)));
+            account.setBalance(balance.add(investment.multiply(BORROWING_RATE.subtract(LENDING_RATE))));
             accountDao.save(account);
         }
     }

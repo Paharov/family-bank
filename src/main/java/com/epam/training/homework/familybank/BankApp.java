@@ -52,15 +52,17 @@ public class BankApp {
         System.out.printf("The balance of the bank: %.2f%n", accountOverviewService.getBankBalance());
         System.out.println();
 
-        System.out.println("Calculating the interests...");
-        transactionService.calculateInterests();
-        System.out.println();
+        for (int i = 0; i < 3; i++) {
+            System.out.println("Calculating the interests...");
+            transactionService.calculateInterests();
+            System.out.println();
 
-        System.out.printf("The balance of Alan: %.2f%n", accountOverviewService.getBalanceByName("Alan"));
-        System.out.printf("The balance of Ben: %.2f%n", accountOverviewService.getBalanceByName("Ben"));
-        System.out.printf("The balance of Cecil: %.2f%n", accountOverviewService.getBalanceByName("Cecil"));
-        System.out.printf("The balance of the bank: %.2f%n", accountOverviewService.getBankBalance());
-        System.out.println();
+            System.out.printf("The balance of Alan: %.2f%n", accountOverviewService.getBalanceByName("Alan"));
+            System.out.printf("The balance of Ben: %.2f%n", accountOverviewService.getBalanceByName("Ben"));
+            System.out.printf("The balance of Cecil: %.2f%n", accountOverviewService.getBalanceByName("Cecil"));
+            System.out.printf("The balance of the bank: %.2f%n", accountOverviewService.getBankBalance());
+            System.out.println();
+        }
 
     }
 }

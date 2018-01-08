@@ -16,4 +16,10 @@ public interface AccountDao {
     Account getAccountById(long accountId);
 
     List<Account> getAccountsInDebt();
+
+    List<Account> getAccountsWithInvestment();
+
+    BigDecimal getSumOfDebts();
+
+    BigDecimal getSumOfInvestments();
 }
