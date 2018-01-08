@@ -36,9 +36,9 @@ public class BankApp {
         System.out.printf("The balance of the bank: %.2f%n", accountOverviewService.getBankBalance());
         System.out.println();
 
-        System.out.println("Alan and Cecil lend 1000 HUF to the bank...");
-        transactionService.lend("Alan", new BigDecimal(1000));
-        transactionService.lend("Cecil", new BigDecimal(1000));
+        System.out.println("Alan and Cecil lend 1200/800 HUF to the bank...");
+        transactionService.lend("Alan", new BigDecimal(1200));
+        transactionService.lend("Cecil", new BigDecimal(800));
         System.out.println("Ben withdraws all his money, and borrows 1000 HUF");
         transactionService.withdraw("Ben", new BigDecimal(2000));
         transactionService.borrow("Ben", new BigDecimal(1000));
